@@ -19,7 +19,7 @@
   - name: Check for Starship command
     command: starship >/dev/null 2>&1
     register: installed
-    no_log: false
+    no_log: true
     ignore_errors: yes
 
   - name: Download Starship installer
@@ -33,6 +33,10 @@
   - name: Run the install script
     shell: /tmp/starship-installer.sh -y
     when: download.changed
+
+  - name: Create .zshrc with starship
+    shell: echo 'eval "$(starship init zsh)"' >> ~/.zshrc
+    when: installed.rc != 0
 
   #- name: Remove the starship-installer.sh
     #file:
